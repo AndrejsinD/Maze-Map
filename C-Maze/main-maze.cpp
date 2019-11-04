@@ -1,5 +1,6 @@
 /* TODO: 
 Add header with authors names and other lab details 
+Author: David Andrejsin
 */
 
 #include <iostream> // for i/o
