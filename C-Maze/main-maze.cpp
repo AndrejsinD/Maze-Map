@@ -63,6 +63,10 @@ public:
 		cout << endl;
 		return;
 	}
+	
+	void search_from() {
+		//Here I will tranlate the python code from the textbook into C++
+	}
 };
 
 int main() {
