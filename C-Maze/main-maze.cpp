@@ -7,8 +7,10 @@ Author: David Andrejsin
 #include <fstream> // for file handling
 #include <vector>
 #include <string>
+#include <stack>
 #include "stdlib.h" // for the system command
 #include "CTurtle.hpp"
+
 namespace ct = cturtle;
 using namespace std;
 
@@ -16,6 +18,10 @@ class Maze {
 private:
 	int rows = 0;
 	int cols = 0;
+	int start_row = 0;
+	int start_column = 0;
+	stack <vector <int>> forkstack;
+
 	vector <vector <char>> mazeVect; // Matrix of chars
 
 public: 
@@ -63,16 +69,73 @@ public:
 		cout << endl;
 		return;
 	}
-	
-	void search_from() {
-		//Here I will tranlate the python code from the textbook into C++
+
+	void checkStart() {
+		for (unsigned int i = 0; i < mazeVect.size(); i++) {
+			for (unsigned int j = 0; j < mazeVect[i].size(); j++) {
+				if (mazeVect[i][j] == *"S");
+					start_row = i;
+					start_column = j;
+			}
+			cout << endl;
+		}
+		cout << endl;
+		return;
+	}
+
+	int count_paths() {
+		int counter = 0;
+		if (mazeVect[start_row - 1][start_column] != *"+" || mazeVect[start_row - 1][start_column] != *".") {
+			counter++;
+		}
+		if (mazeVect[start_row][start_column - 1] != *"+" || mazeVect[start_row][start_column - 1] != *".") {
+			counter++;
+		}
+		if (mazeVect[start_row + 1][start_column] != *"+" || mazeVect[start_row + 1][start_column] != *".") {
+			counter++;
+		}
+		if (mazeVect[start_row][start_column + 1] != *"+" || mazeVect[start_row][start_column + 1] != *".") {
+			counter++;
+		}
+		return counter;
+	}
+
+	void travel_path() {
+		if (mazeVect[start_row - 1][start_column] != *"+" || mazeVect[start_row - 1][start_column] != *".") {
+			mazeVect[start_row][start_column] = *".";
+			mazeVect[start_row - 1][start_column] = *"S";
+			start_row = start_row - 1;
+		}
+		else if (mazeVect[start_row][start_column - 1] != *"+" || mazeVect[start_row][start_column - 1] != *".") {
+			mazeVect[start_row][start_column] = *".";
+			mazeVect[start_row][start_column - 1] = *"S";
+			start_column = start_column - 1;
+		}
+		else if (mazeVect[start_row + 1][start_column] != *"+" || mazeVect[start_row + 1][start_column] != *".") {
+			mazeVect[start_row][start_column] = *".";
+			mazeVect[start_row + 1][start_column] = *"S";
+			start_row = start_row + 1;;
+		}
+		else if (mazeVect[start_row][start_column + 1] != *"+" || mazeVect[start_row][start_column + 1] != *".") {
+			mazeVect[start_row][start_column] = *".";
+			mazeVect[start_row][start_column + 1] = *"S";
+			start_column = start_column + 1;
+		}
+	}
+
+	void travel() {
+		int paths = count_paths();
+
+		if (paths > 1) {
+			forkstack.push({ start_row, start_row });
+		}
 	}
 };
 
 int main() {
 	Maze myMaze;
 	myMaze.readMaze("mazemap2.txt");
-
+	myMaze.checkStart();
 	system("cls"); // this clears the console, but is not really needed.
 
 	myMaze.printMaze();
@@ -82,4 +145,4 @@ int main() {
 	cout << "Press Enter to exit...";
 	getchar();
 	return 0;
-};
+}
