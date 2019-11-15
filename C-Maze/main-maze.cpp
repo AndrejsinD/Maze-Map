@@ -21,7 +21,6 @@ private:
 	int start_row = 0;
 	int start_column = 0;
 	stack <vector <int>> forkstack;
-
 	vector <vector <char>> mazeVect; // Matrix of chars
 
 public: 
@@ -237,12 +236,12 @@ public:
 
 int main() {
 	Maze myMaze;
-	myMaze.readMaze("mazemap5.txt");
-	myMaze.checkStart();
+	myMaze.readMaze("mazemap5.txt"); // reads the map
+	myMaze.checkStart(); // finds the position of the turtle at the beginning
 
-	myMaze.treasures();
-	myMaze.checkStart();
-	myMaze.travel();
+	myMaze.treasures(); // travels through the entire maze
+	myMaze.checkStart(); // finds the turtle again
+	myMaze.travel(); // travels out of the maze
 
 	cout << "Press Enter to exit...";
 	getchar();
