@@ -70,6 +70,7 @@ public:
 	}
 
 	void checkStart() {
+		// finds the starting position of the Turtle
 		for (unsigned int i = 0; i < mazeVect.size(); i++) {
 			for (unsigned int j = 0; j < mazeVect[i].size(); j++) {
 				if (mazeVect[i][j] == 'S') {
@@ -84,7 +85,9 @@ public:
 	}
 
 	int count_paths() {
+		// finds the number of possible ways to go when it wants to get out
 		int counter = 0;
+
 		if (mazeVect[start_row - 1][start_column] != *"+" && mazeVect[start_row - 1][start_column] != *".") {
 			counter++;
 		}
@@ -100,7 +103,29 @@ public:
 		return counter;
 	}
 
+	int count_paths_treasures() {
+		// finds the number of possible ways to go when it wants to travel through the entire maze
+		int counter = 0;
+		if (start_row == 0 || start_row == mazeVect.size() - 1 || start_column == 0 || start_column == mazeVect[0].size() - 1) {
+			return 0;
+		}
+		if (mazeVect[start_row - 1][start_column] != *"+" && mazeVect[start_row - 1][start_column] != *",") {
+			counter++;
+		}
+		if (mazeVect[start_row][start_column - 1] != *"+" && mazeVect[start_row][start_column - 1] != *",") {
+			counter++;
+		}
+		if (mazeVect[start_row + 1][start_column] != *"+" && mazeVect[start_row + 1][start_column] != *",") {
+			counter++;
+		}
+		if (mazeVect[start_row][start_column + 1] != *"+" && mazeVect[start_row][start_column + 1] != *",") {
+			counter++;
+		}
+		return counter;
+	}
+
 	void travel_path() {
+		// used for travelling out of the entire maze
 		if (mazeVect[start_row - 1][start_column] != *"+" && mazeVect[start_row - 1][start_column] != *".") {
 			mazeVect[start_row][start_column] = *".";
 			mazeVect[start_row - 1][start_column] = *"S";
@@ -123,7 +148,63 @@ public:
 		}
 	}
 
+	void travel_treasures() {
+		// used for travelling through the entire maze
+		if (mazeVect[start_row - 1][start_column] != *"+" && mazeVect[start_row - 1][start_column] != *",") {
+			mazeVect[start_row][start_column] = *",";
+			mazeVect[start_row - 1][start_column] = *"S";
+			start_row = start_row - 1;
+		}
+		else if (mazeVect[start_row][start_column - 1] != *"+" && mazeVect[start_row][start_column - 1] != *",") {
+			mazeVect[start_row][start_column] = *",";
+			mazeVect[start_row][start_column - 1] = *"S";
+			start_column = start_column - 1;
+		}
+		else if (mazeVect[start_row + 1][start_column] != *"+" && mazeVect[start_row + 1][start_column] != *",") {
+			mazeVect[start_row][start_column] = *",";
+			mazeVect[start_row + 1][start_column] = *"S";
+			start_row = start_row + 1;;
+		}
+		else if (mazeVect[start_row][start_column + 1] != *"+" && mazeVect[start_row][start_column + 1] != *",") {
+			mazeVect[start_row][start_column] = *",";
+			mazeVect[start_row][start_column + 1] = *"S";
+			start_column = start_column + 1;
+		}
+	}
+
+	void treasures() {
+		// travels through the entire maze
+		// recursive function
+		system("cls");
+		printMaze();
+
+		int paths = count_paths_treasures();
+
+		if (paths > 1) {
+			forkstack.push({ start_row, start_column });
+			travel_treasures();
+			treasures();
+		}
+		else if (paths == 1) {
+			travel_treasures();
+			treasures();
+		}
+		else {
+			mazeVect[start_row][start_column] = *",";
+			if (forkstack.empty() != 1) {
+				start_row = forkstack.top()[0];
+				start_column = forkstack.top()[1];
+				forkstack.pop();
+				travel_treasures();
+				treasures();
+			}
+			return;
+		}
+	}
+
 	void travel() {
+		// finds the way out
+		// recursive function
 		system("cls");
 		printMaze();
 
@@ -156,10 +237,11 @@ public:
 
 int main() {
 	Maze myMaze;
-	myMaze.readMaze("mazemap1.txt");
+	myMaze.readMaze("mazemap5.txt");
 	myMaze.checkStart();
-	//system("cls"); // this clears the console, but is not really needed.
 
+	myMaze.treasures();
+	myMaze.checkStart();
 	myMaze.travel();
 
 	cout << "Press Enter to exit...";
