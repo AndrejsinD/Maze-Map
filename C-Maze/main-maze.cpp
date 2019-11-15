@@ -1,6 +1,12 @@
 /* TODO: 
-Add header with authors names and other lab details 
+L10: A Cave Maze and Recursive Searching
+Objectives:
+Learn about backtracking
+Gain practice in using recursion for backtracking
+Gain practice in creating and using nested vectors
+
 Author: David Andrejsin
+Helped by Rusty Dotson
 */
 
 #include <iostream> // for i/o
